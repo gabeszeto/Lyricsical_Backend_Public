@@ -7,7 +7,6 @@ __pycache__/
 
 # Environment variables and secrets
 .env
-*.env
 
 # Data files
 timings.csv
