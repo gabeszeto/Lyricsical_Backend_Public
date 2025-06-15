@@ -38,7 +38,6 @@ class AddScores(Resource):
                 db.disconnect()
                 return
 
-            print("DailyData added:", added)
             
             # Profile-related logic only for non-anon users
             if not is_anon and profileId:

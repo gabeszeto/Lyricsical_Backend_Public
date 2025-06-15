@@ -4,7 +4,6 @@ from prisma.client import Client
 import pandas as pd
 
 def serialized_data(response):
-    # Convert DailyData instance to a dictionary excluding createdAt and updatedAt.
     return {
         "id": response.id,
         "email": response.email,
@@ -18,7 +17,6 @@ class RetrieveProfile(Resource):
         try:
             data = request.json
             profileId = data.get('user_id')
-            print("Incoming user_id:", profileId)
 
             if not profileId:
                 abort(400, description="user_id is missing from request")
@@ -35,8 +33,7 @@ class RetrieveProfile(Resource):
 
             if not response:
                 abort(404, description="Profile not found")
-            print(response)
-            print(serialized_data(response))
+
             return jsonify(serialized_data(response))
 
         except Exception as e:

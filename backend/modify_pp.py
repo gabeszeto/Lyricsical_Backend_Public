@@ -9,7 +9,6 @@ class ModifyProfilePicture(Resource):
             username = data.get('userName')
             pictureUrl = data.get('pictureUrl')
 
-            # print(pictureUrl)
 
             db = Client()
             db.connect()
@@ -26,7 +25,7 @@ class ModifyProfilePicture(Resource):
                 print(e)
                 db.disconnect()
                 return
-            # print(updated)
+
             db.disconnect()
 
             return jsonify(pictureUrl=updated.picture)

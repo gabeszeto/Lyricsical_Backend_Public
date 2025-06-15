@@ -1,7 +1,5 @@
-import requests
 from prisma.client import Client
 import random
-import json
 import pandas as pd
 from decimal import Decimal
 from datetime import datetime as dt, timedelta
@@ -10,10 +8,8 @@ DEFAULT_TRACK_ID = '26501700' # Toxic by Britney
 PLAYLIST_ID = '1764032334' # Gabe's playlist of songs
 
 
-
 class Daily:
     def __init__(self):
-        # self.API_KEY = API_KEY
         self.DAY_SONG = self.update_index()
 
     def reset_actives(self):
@@ -33,7 +29,7 @@ class Daily:
     
 
     def update_index(self):
-        # self.update_streaks()
+
         db = Client()
         db.connect()
 
@@ -103,7 +99,8 @@ class Daily:
         else:
             counter = 0
             print('no songs yet')
-        # add current song intop the history database
+
+        # Add current song to the history database
         add_history = db.history.create(
             data={
                 # 'trackId': response[index].id,
@@ -119,7 +116,7 @@ class Daily:
         )
 
         db.disconnect()
-        # self.DAY_SONG = response[index]
+
         self.DAY_SONG = {
             "track": response[index],
             "counter": counter + 1
@@ -127,13 +124,12 @@ class Daily:
         return self.DAY_SONG
     
     def update_streaks(self, current_song):
-        print(current_song.trackId)
 
         try:
             db = Client()
             db.connect()
 
-            # find users who have a streak and save as 'users'
+            # Find users who have a streak and save as 'users'
             users = db.profile.find_many(
                 where={
                     "streak" : {
@@ -141,15 +137,12 @@ class Daily:
                     }
                 }
             )
-            # stop function if all users have no streak
+
+            # Stop function if all users have no streak
             if not users:
-                print('no users')
                 return
             
-            print("******")
-            print(users)
-            print("******")
-            # check daily data and save 'active' as users who have played today's song and have an active streak
+            # Check daily data and save 'active' as users who have played today's song and have an active streak
             try:
                 active = db.dailydata.find_many(
                     where={
@@ -160,10 +153,9 @@ class Daily:
                     }
                 )
             except Exception as e:
-                # print(Daily.)
-                print("streak daily updater: ", e)
+                print("Streak daily updater: ", e)
                 return
-            print(active)
+            
             # Update the streaks table for every profileId in inactive
             res = db.profile.update_many(
                 where={
@@ -175,8 +167,6 @@ class Daily:
                     "streak": 0
                 }
             )
-            print("*******")
-            print(res)
 
             db.disconnect()
         except Exception as e:

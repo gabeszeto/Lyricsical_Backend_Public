@@ -25,7 +25,6 @@ class RetrieveGuesses(Resource):
                 'wrongGuesses2': guesses_data.wrongGuesses2
             }
 
-            print(guesses)
 
             return jsonify(guesses)
         except Exception as e:

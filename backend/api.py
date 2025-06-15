@@ -16,7 +16,7 @@ CORS(app)
 
 class SelectedSong(Resource):
     def get(self):
-        song_data = DAILY_CLASS.DAY_SONG  # this is a dict with "track" and "counter"
+        song_data = DAILY_CLASS.DAY_SONG
         song_json = song_data["track"].model_dump(round_trip=True)
         song_json["counter"] = song_data["counter"]
         return jsonify(song_json)
@@ -24,6 +24,7 @@ class SelectedSong(Resource):
       
 sched = APScheduler()
 
+# Endpoints
 api.add_resource(SelectedSong, '/selected-song/')
 api.add_resource(scores_endpoints.AddScores, '/add-scores/')
 api.add_resource(retrieve_scores.RetrieveScores, '/retrieve-scores/')
@@ -44,7 +45,6 @@ sched.add_job(id='refreshNumber', func=DAILY_CLASS.update_index, trigger = 'cron
 # Every minute scheduler (while developing)
 # sched.add_job(id='refreshNumber', func=DAILY_CLASS.update_index, trigger = 'interval', seconds = 60)
 sched.start()
-# api.add_resource(timings.Timings, '/add-timings/')
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8080))

@@ -9,8 +9,6 @@ class UpdateUsername(Resource):
             newUsername = data.get('newUsername')
             username = data.get('userName')
 
-            print(data)
-
             db = Client()
             db.connect()
             try:

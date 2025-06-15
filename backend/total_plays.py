@@ -12,9 +12,6 @@ class TotalPlays(Resource):
             db = Client()
             db.connect()
 
-            print(trackId)
-
-            #  why the fuck does this not work
             try: 
                 db.history.update_many(
                     where={

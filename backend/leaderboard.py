@@ -4,7 +4,6 @@ from prisma.client import Client
 import pandas as pd
 
 def serialize_player_profile(user_profile, user_score):
-    # Convert the user profile to a serializable dictionary, excluding createdAt and updatedAt
     return {
         "id": str(user_profile.id),
         "username": user_profile.username,
@@ -31,15 +30,13 @@ class RetrieveLeaderboard(Resource):
             data = request.json
 
             user_id = data.get('user_id')
-            # trackId = data.get('songId')
             lookback = data.get('lookback')
             day_counter = data.get('day_counter')
 
-            print(data)
             db = Client()
             db.connect()
 
-            # find trackId for the current song
+            # Find trackId for the current song
             trackId = db.history.find_first(
                 skip=lookback,
                 order={
@@ -47,7 +44,7 @@ class RetrieveLeaderboard(Resource):
                 }
             ).trackId
 
-            #find the artist and song names of trackId
+            # Find the artist and song names of trackId
             names = db.timing.find_first(
                 where = {
                     'trackId': trackId
@@ -57,7 +54,7 @@ class RetrieveLeaderboard(Resource):
             realName = names.realName
             realArtist = names.realArtist
 
-            #find all instances of scores
+            # Find all instances of scores
             response = db.dailydata.find_many(
                 where={
                     "trackId": trackId,
@@ -117,8 +114,6 @@ class RetrieveLeaderboard(Resource):
                 "realName": realName,
                 "realArtist": realArtist
             }
-            print(final_result)
-            print(jsonify(final_result))
             return jsonify(final_result)
         except Exception as e:
             print(e)

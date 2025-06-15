@@ -4,14 +4,12 @@ from prisma.client import Client
 from datetime import datetime as dt
 
 def daily_data_to_dict(daily_data):
-    # Convert DailyData instance to a dictionary excluding createdAt and updatedAt.
     return {
         "id": daily_data.id,
         "profileId": daily_data.profileId,
         "trackId": daily_data.trackId,
         "pressTime": daily_data.pressTime,
         "score": daily_data.score,
-        # Exclude createdAt and updatedAt
     }
 
 class RetrieveScores(Resource):

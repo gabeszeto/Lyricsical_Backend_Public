@@ -27,10 +27,9 @@ class UpdateDisplayName(Resource):
                 print(e)
                 db.disconnect()
                 return
-            # print(updated)
+            
             db.disconnect()
             return jsonify(displayName=updated.displayname)
-            db.disconnect()
         except Exception as e:
             db.disconnect()
             abort(400, e)

@@ -3,7 +3,6 @@ from flask import request, abort, jsonify
 from prisma.client import Client
 from datetime import datetime as dt
 
-# function for possible rework of barchart to include pressed time as well rather than just score
 def get_useful_data(song):
     return {
         'pressTime': song.pressTime,
@@ -41,12 +40,11 @@ class GetBarChart(Resource):
 
             # Handle the case where no data was found
             if not response: 
-                return jsonify({})  # Return an empty JSON array or another appropriate response
+                return jsonify({}) 
             
 
             scores = [song.score for song in response]
 
-            # print(scores)
 
             scoreCounts = {
                 "<0.5": 0,
@@ -70,14 +68,12 @@ class GetBarChart(Resource):
                     scoreCounts["5-10"] += 1
                 else:
                     scoreCounts["10+"] += 1
-
-            # print(scoreCounts)
                     
             combinedData = {
                 'streaksData': playerData,
                 'scoreCounts': scoreCounts
             }
-            print(dt.now() - start, " Barchart Endpoint")
+
             return jsonify(combinedData)
         except Exception as e:
             db.disconnect()
