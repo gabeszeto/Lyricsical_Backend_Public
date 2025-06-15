@@ -1,0 +1,37 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Environment variables and secrets
+.env
+*.env
+
+# Data files
+timings.csv
+
+# Dev-only scripts
+add_songs.py
+template.py
+
+# Prisma Python client – generated automatically
+backend/prisma/
+!backend/prisma/schema.prisma
+
+# Editor & OS files
+.vscode/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+
+# Docker
+*.tar
+*.img
+*.pid
+
+# Jupyter or notebook output (if used for data analysis)
+*.ipynb_checkpoints
