@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider             = "prisma-client-py"
+  output               = "."
+  recursive_type_depth = -1
+  interface            = "sync"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Track {
+  id           String  @id @default(uuid())
+  songId       Int     @unique
+  artist       String? @db.Text
+  name         String  @db.Text
+  permalinkUrl String  @db.Text
+  active       Boolean @default(true)
+  artworkUrl   String? @db.Text
+
+  start     Timing[]
+  tracks    DailyData[]
+  histories History[]
+  queues    queue[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("track")
+}
+
+model Timing {
+  id String @id @default(uuid())
+
+  startTime    Float?
+  fadeTime     Float?
+  realName     String
+  realArtist   String
+  correct_word String?
+  wrong_word1  String?
+  wrong_word2  String?
+
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("timing")
+}
+
+model Profile {
+  id          String  @id @default(uuid())
+  email       String? @unique @db.Text
+  displayname String?
+  username    String? @unique @db.Text
+  picture     String?
+
+  streak     Int @default(0)
+  maxStreak  Int @default(0)
+  totalPlays Int @default(0)
+
+  scores DailyData[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("profile")
+}
+
+model DailyData {
+  id String @id @default(uuid())
+
+  // Profile relationship (optional)
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String? // nullable
+
+  // Anonymous user ID
+  anonymousUser AnonymousUser? @relation("AnonUserToDailyData", fields: [anonId], references: [anonId], onDelete: Cascade)
+  anonId        String? // nullable
+  anon          Boolean // required: true if anonId is used, false if profileId is used
+
+  // Track reference
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String
+
+  pressTime Float?
+  score     Float?
+
+  day_counter Int
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("daily_data")
+}
+
+model History {
+  id String @id @default(uuid())
+
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String
+
+  realName String?
+
+  counter Int @default(0)
+
+  totalPlays     Int @default(0)
+  correctGuesses Int @default(2)
+  wrongGuesses1  Int @default(1)
+  wrongGuesses2  Int @default(1)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@map("history")
+}
+
+model AnonymousUser {
+  id          String   @id @default(uuid())
+  anonId      String   @unique // A UUID or short hash
+  displayName String   @unique // e.g. "WittyFox123"
+  createdAt   DateTime @default(now())
+
+  dailyData DailyData[] @relation("AnonUserToDailyData")
+
+  @@map("anon_user")
+}
+
+model queue {
+  id String @id @default(uuid())
+
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String @unique
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+}

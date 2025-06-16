@@ -16,8 +16,8 @@ add_songs.py
 template.py
 
 # Prisma Python client – generated automatically
-backend/prisma/
-!backend/prisma/schema.prisma
+# backend/prisma/
+# !backend/prisma/schema.prisma
 
 # Editor & OS files
 .vscode/
